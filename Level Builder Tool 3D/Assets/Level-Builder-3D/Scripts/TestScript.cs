@@ -5,18 +5,37 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 
+// ReSharper disable once CheckNamespace
 public class TestScript : MonoBehaviour
     {
         [SerializeField] private TileInfo groundTilePrefab;
-
         [SerializeField] private Vector2 tilesRandomizer;
-        public LevelTilingInformation levelDesignScriptableObject;
+        [SerializeField]   private LevelTilingInformation scriptableObject;
         [SerializeField] private string tileName;
         private  List<TileInfo> _tiles = new List<TileInfo>();
+       private Vector3 _newPosition;
+       [SerializeField] private GameObject testObject;
+       [SerializeField] private LayerMask groundLayer;
+       [SerializeField] private LayerMask handlerLayer;
+       [SerializeField] private bool hasPutFirstTile;
+        private RaycastHit _hit;
+        private RaycastHit _hitHandler;
+        private Ray _ray;
+       
+        private void Update()
+       {
+           if (Input.GetMouseButtonDown(0))
+           {
+               if (Camera.main is { }) _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+               RaycastHandles();
+               if (hasPutFirstTile) return;
+               hasPutFirstTile = true;
+               SpawnBaseModel();
+           }
+       }
 
-
-
-        #region Design Level
+       
+       #region Design Level
 
         public void DrawLevel()
         {
@@ -24,7 +43,7 @@ public class TestScript : MonoBehaviour
             var randomZ = Random.Range(-tilesRandomizer.y, tilesRandomizer.y);
 
             var levelElement = Instantiate(groundTilePrefab);
-            levelDesignScriptableObject.elementInfo.Add(null);
+            scriptableObject.elementInfo.Add(null);
             levelElement.gameObject.SetActive(false);
             levelElement.transform.DOMove(Vector3.zero, 0);
             levelElement.transform.DOMoveX(randomX, 0);
@@ -33,8 +52,6 @@ public class TestScript : MonoBehaviour
                 levelElement.gameObject.SetActive(true);
                 levelElement.tileTag = tileName;
                 var transform1 = levelElement.transform;
-                print(transform1.localPosition);
-                print(transform1.localRotation);
                 levelElement.tileTransforms.SetTransforms(transform1.localPosition, transform1.localScale,
                     transform1.localRotation);
                 _tiles.Add(levelElement.GetComponent<TileInfo>());
@@ -43,14 +60,21 @@ public class TestScript : MonoBehaviour
         [ContextMenu("Save Data")]
         public void SaveLevel()
         {
-
-            var curIndex = levelDesignScriptableObject.elementInfo.Count - _tiles.Count;
-           
-            print(levelDesignScriptableObject.elementInfo[curIndex].tileTransforms);
+            var curIndex = scriptableObject.elementInfo.Count - _tiles.Count;
+            
+            print(curIndex);
              foreach (var curTile in _tiles)
             {
-                print ("saving data");
-                levelDesignScriptableObject.elementInfo[curIndex++].SetTileValues(curTile);
+                try
+                {
+                    scriptableObject.elementInfo[curIndex++].SetTileValues(curTile);
+                }
+                catch (Exception e)
+                {
+                    Camera.main.backgroundColor=Color.red;
+                    throw;
+                }
+                
             }
         }
         
@@ -62,13 +86,14 @@ public class TestScript : MonoBehaviour
         [ContextMenu("Generate Data")]
         public void GenerateLevel()
         {
-            if (levelDesignScriptableObject.elementInfo.Count == 0)
+            if (scriptableObject.elementInfo.Count == 0)
             {
                 print("No Data to generate");
+                Camera.main.backgroundColor=Color.green;
                 return;
             }
 
-            foreach (var elementInfo in levelDesignScriptableObject.elementInfo)
+            foreach (var elementInfo in scriptableObject.elementInfo)
             {
                 var element = Instantiate(groundTilePrefab);
                 element.gameObject.SetActive(false);
@@ -95,6 +120,66 @@ public class TestScript : MonoBehaviour
            
         }
 
+        #endregion
+        
+        #region Raycasting to spawn Object
+
+        private void SpawnBaseModel()
+        {
+            if (!Physics.Raycast(_ray, out _hit, 200, groundLayer)) return;
+
+            _hit.collider.enabled = false;
+            _newPosition = _hit.point;
+            _newPosition.y = 0;
+            var levelElement = Instantiate(groundTilePrefab);
+            scriptableObject.elementInfo.Add(null);
+            var transform2 = levelElement.transform;
+            transform2.localPosition = _newPosition;
+            levelElement.tileTag = tileName;
+            var transform1 = transform2;
+            levelElement.tileTransforms.SetTransforms(transform1.localPosition, transform1.localScale,
+                transform1.localRotation);
+            _tiles.Add(levelElement.GetComponent<TileInfo>());
+        }
+
+        private void RaycastHandles()
+        {
+            if (!Physics.Raycast(_ray, out _hitHandler, 200,handlerLayer)) return;
+
+            var newPos = _hitHandler.transform.GetComponentInParent<TileInfo>().transform.localPosition;
+            switch (_hitHandler.transform.tag)
+            {
+                case "Forward":
+                    newPos.z += 2;
+                    SpawnNewElementAt(newPos);
+                    break;
+                case "Backward":
+                    newPos.z -= 2;
+                    SpawnNewElementAt(newPos);
+                    break;
+                case "Left":
+                    newPos.x -= 2;
+                     SpawnNewElementAt(newPos);
+                     break;
+                case "Right":
+                    newPos.x += 2;
+                    SpawnNewElementAt(newPos);
+                     break;
+            }
+        }
+
+        private void SpawnNewElementAt(Vector3 newPos)
+        {
+            var levelElement = Instantiate(groundTilePrefab);
+            scriptableObject.elementInfo.Add(null);
+            var transform2 = levelElement.transform;
+            transform2.localPosition = newPos;
+            levelElement.tileTag = tileName;
+            var transform1 = transform2;
+            levelElement.tileTransforms.SetTransforms(transform1.localPosition, transform1.localScale,
+                transform1.localRotation);
+            _tiles.Add(levelElement.GetComponent<TileInfo>());
+        }
         #endregion
 
         private void OnDestroy()

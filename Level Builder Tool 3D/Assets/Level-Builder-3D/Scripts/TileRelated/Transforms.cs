@@ -1,7 +1,7 @@
 ﻿
     
     using UnityEngine;
-
+// ReSharper disable once CheckNamespace
     [System.Serializable]
     public class Transforms
     {

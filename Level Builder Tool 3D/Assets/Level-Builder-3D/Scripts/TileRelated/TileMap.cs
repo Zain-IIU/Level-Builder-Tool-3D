@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-
-[System.Serializable]
-public class Tile 
+﻿[System.Serializable]
+// ReSharper disable once CheckNamespace
+public class TileMap 
 {
      public Transforms tileTransforms;
      public string tileTag;
