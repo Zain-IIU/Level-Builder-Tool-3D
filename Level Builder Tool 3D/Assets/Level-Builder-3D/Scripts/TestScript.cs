@@ -21,6 +21,13 @@ public class TestScript : MonoBehaviour
             
               private void Update()
              {
+                 if (Input.GetKeyDown(KeyCode.R))
+                 {
+                     var transformLocalRotation = _tiles[_tiles.Count - 1].transform.localRotation;
+                     transformLocalRotation = Quaternion.Euler(0, transformLocalRotation.eulerAngles.y + 90, 0);
+                     _tiles[_tiles.Count - 1].transform.localRotation = transformLocalRotation;
+
+                 }
                  if (Input.GetMouseButtonDown(0))
                  {
                      if (Camera.main is { }) _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -29,6 +36,8 @@ public class TestScript : MonoBehaviour
                      hasPutFirstTile = true;
                      SpawnBaseModel();
                  }
+
+                
              }
       
              
