@@ -85,7 +85,7 @@ public class TestScript : MonoBehaviour
               public void SaveLevel()
               {
                   var prefabObject = Instantiate(gameObject);
-                  LevelSaveSystem.SaveLevel(prefabObject);
+                  //LevelSaveSystem.SaveLevel(prefabObject);
               }
               
       
@@ -163,6 +163,9 @@ public class TestScript : MonoBehaviour
                   _tiles.Add(levelElement.GetComponent<TileInfo>());
               }
               #endregion
+
+              public void SetTileIndex(int value) => curPrefabIndex = value;
+              
       
               private void OnDestroy()
               {
