@@ -2,6 +2,7 @@
 using SaveLoadSystem;
 
 
+
 // ReSharper disable once CheckNamespace
 [RequireComponent(typeof(SaveableEntity))]
     public class TileInfo : MonoBehaviour,ISaveable
@@ -49,7 +50,8 @@ using SaveLoadSystem;
         }
 
         #endregion
-        
+
+       
         [System.Serializable]
         struct TileData
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 namespace SaveLoadSystem
 {
@@ -120,8 +121,6 @@ namespace SaveLoadSystem
 
 
         static Dictionary<string, SaveableEntity> m_allSaveables = new Dictionary<string, SaveableEntity>();
-        //static List<SaveableEntity> m_toDelete = new List<SaveableEntity>();
-        //static List<SaveableEntity> m_addToAll = new List<SaveableEntity>();
         List<string> m_childIDsOfThis = new List<string>();
 
 
@@ -163,8 +162,8 @@ namespace SaveLoadSystem
         }
         private void Awake()
         {
-            if (m_prefabID != "")
-                PrefabChildIdentifier();
+             if (m_prefabID != "")
+               PrefabChildIdentifier();
         }
         // Start is called before the first frame update
         void Start()
@@ -174,12 +173,7 @@ namespace SaveLoadSystem
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
+      
         private void OnDestroy()
         {
             m_allSaveables.Remove(m_ID);
@@ -222,12 +216,14 @@ namespace SaveLoadSystem
         [ContextMenu("Generate ID")]
         public void GenerateID()
         {
-
             SetID(Guid.NewGuid().ToString());
         }
-        public void GenerateID_NameBased()
+
+        private static int _randomID=0;
+        private void GenerateID_NameBased()
         {
-            SetID(gameObject.name);
+            m_prefabID = gameObject.name + _randomID++;
+            print("id generated");
         }
 
 
@@ -271,9 +267,7 @@ namespace SaveLoadSystem
             transformData.local.rotation.FromQuaternion(transform.localRotation);
             transformData.local.scale.FromVector3(transform.localScale);
 
-            bool hasPrefab = true;
-            if (m_prefabID == "")
-                hasPrefab = false;
+            bool hasPrefab = !(m_prefabID == "");
             //if (hasPrefab)
             //    PrefabChildIdentifier();
 

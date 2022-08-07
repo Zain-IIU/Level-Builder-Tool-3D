@@ -38,7 +38,6 @@ namespace SaveLoadSystem
         private void Awake()
         {
             m_instance = this;
-            UpdateTable();
         }
         private void OnEnable()
         {
