@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-
-
-
 // ReSharper disable once CheckNamespace
 public class TestScript : MonoBehaviour
     {
@@ -13,10 +10,10 @@ public class TestScript : MonoBehaviour
             Tiling,
             Props
         }
-           
+
+        [SerializeField] private LevelSaveSystem saveSystem;
         [SerializeField] private TileInfo[] groundTilePrefab;
         [SerializeField] private GameObject prop;
-        [SerializeField] private string tileName;
         private  List<TileInfo> _tiles = new List<TileInfo>();
        private Vector3 _newPosition;
        [SerializeField] private LayerMask groundLayer;
@@ -85,7 +82,7 @@ public class TestScript : MonoBehaviour
               public void SaveLevel()
               {
                   var prefabObject = Instantiate(gameObject);
-                  //LevelSaveSystem.SaveLevel(prefabObject);
+                  saveSystem.SaveLevel(prefabObject);
               }
               
       
@@ -104,7 +101,6 @@ public class TestScript : MonoBehaviour
                   var levelElement = Instantiate(groundTilePrefab[curPrefabIndex], transform, true);
                   var transform2 = levelElement.transform;
                   transform2.localPosition = _newPosition;
-                  levelElement.tileTagInScene = tileName;
                   _tiles.Add(levelElement.GetComponent<TileInfo>());
               }
       
@@ -159,7 +155,6 @@ public class TestScript : MonoBehaviour
                   var levelElement = Instantiate(groundTilePrefab[curPrefabIndex], transform, true);
                   var transform2 = levelElement.transform;
                   transform2.localPosition = newPos;
-                  levelElement.tileTagInScene = tileName;
                   _tiles.Add(levelElement.GetComponent<TileInfo>());
               }
               #endregion
