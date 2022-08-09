@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -22,6 +23,8 @@ public class LevelDesignTool : MonoBehaviour
     [SerializeField] private LayerMask handlerLayer;
     [SerializeField] private LayerMask tileLayer;
     [Range(0, 3)] [SerializeField] private float heightAdjuster;
+
+    [SerializeField] private Transform pointer;
 
     #region Private Fields
     private bool _hasPutFirstTile;
@@ -90,13 +93,16 @@ public class LevelDesignTool : MonoBehaviour
               {
                   if (!Physics.Raycast(_ray, out _hit, 200, groundLayer)) return;
       
+                  pointer.gameObject.SetActive(true);
                   _hit.collider.enabled = false;
                   _newPosition = _hit.point;
                   _newPosition.y = heightAdjuster;
                   var levelElement = Instantiate(groundTilePrefabs[_curPrefabIndex], transform, true);
+                  print("base added");
                   var transform2 = levelElement.transform;
                   transform2.localPosition = _newPosition;
                   _storedTiles.Add(levelElement.GetComponent<Transform>());
+                  pointer.DOMove(_storedTiles[_storedTiles.Count - 1].position + new Vector3(0, 1, 0), .1f);
               }
       
               private void RaycastHandles()
@@ -139,6 +145,7 @@ public class LevelDesignTool : MonoBehaviour
                       _gotProp = true;
                       _propInfo=Instantiate(prop, transform, true);
                       _storedTiles.Add(_propInfo.GetComponent<Transform>());
+                      print("Prop Added");
                   }
 
                   _propInfo.transform.position = _hit.point;
@@ -155,13 +162,16 @@ public class LevelDesignTool : MonoBehaviour
                       _storedTiles.Remove(temp.parent);
                       _storedTiles.Add(temp.parent);
                   }
+                  pointer.DOMove(_storedTiles[_storedTiles.Count - 1].position + new Vector3(0, 1, 0), .1f);
               }
               private void SpawnNewElementAt(Vector3 newPos)
               {
                   var levelElement = Instantiate(groundTilePrefabs[_curPrefabIndex], transform, true);
+                  print("new element added");
                   var transform2 = levelElement.transform;
                   transform2.localPosition = newPos;
                   _storedTiles.Add(levelElement.GetComponent<Transform>());
+                  pointer.DOMove(_storedTiles[_storedTiles.Count - 1].position + new Vector3(0, 1, 0), .1f);
               }
     
     

@@ -8,6 +8,7 @@ TagManager:
   - Backward
   - Left
   - Right
+  - Tile
   layers:
   - Default
   - TransparentFX
