@@ -12,7 +12,7 @@ public class LevelDesignTool : MonoBehaviour
     private enum State
     {
         Tiling,
-        Props
+        Props,
     } 
     [SerializeField] private State designState;
     [SerializeField] private LevelSaveSystem saveSystem;
@@ -25,6 +25,7 @@ public class LevelDesignTool : MonoBehaviour
     [Range(0, 3)] [SerializeField] private float heightAdjuster;
 
     [SerializeField] private Transform pointer;
+    [SerializeField] private Transform propPointer;
 
     #region Private Fields
     private bool _hasPutFirstTile;
@@ -48,22 +49,29 @@ public class LevelDesignTool : MonoBehaviour
         }
 
         if (!Input.GetKeyDown(KeyCode.R)) return;
+
         var transformLocalRotation = _storedTiles[_storedTiles.Count - 1].transform.GetChild(0).localRotation;
         transformLocalRotation = Quaternion.Euler(0, transformLocalRotation.eulerAngles.y + 90, 0);
         _storedTiles[_storedTiles.Count - 1].transform.GetChild(0).localRotation = transformLocalRotation;
 
+        
+    }
+
+    private void OnValidate()
+    {
         if (_storedTiles.Count == 0) return;
 
         var localTransform = _storedTiles[_storedTiles.Count - 1].localPosition;
         localTransform.y = heightAdjuster;
         _storedTiles[_storedTiles.Count - 1].localPosition = localTransform;
     }
-    
+
     private void StatePattern()
     {
         switch (designState)
         {
             case State.Tiling:
+                propPointer.gameObject.SetActive(false);
                 if (Input.GetKeyDown(KeyCode.Z))
                 {
                     _curPrefabIndex++;
@@ -81,7 +89,8 @@ public class LevelDesignTool : MonoBehaviour
 
                 break;
             case State.Props:
-                RaycastProps();
+                propPointer.gameObject.SetActive(true);
+                RaycastProps(); 
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -102,7 +111,8 @@ public class LevelDesignTool : MonoBehaviour
                   var transform2 = levelElement.transform;
                   transform2.localPosition = _newPosition;
                   _storedTiles.Add(levelElement.GetComponent<Transform>());
-                  pointer.DOMove(_storedTiles[_storedTiles.Count - 1].position + new Vector3(0, 1, 0), .1f);
+                  pointer.transform.parent = _storedTiles[_storedTiles.Count - 1];
+                  pointer.DOLocalMove(new Vector3(0, 1, 0), .1f);
               }
       
               private void RaycastHandles()
@@ -137,18 +147,19 @@ public class LevelDesignTool : MonoBehaviour
               {
                   if (!Physics.Raycast(_ray, out _hit, 200,tileLayer)) return;
 
-                  if (Input.GetMouseButtonDown(0))
-                      _gotProp = !_gotProp;
+                  propPointer.transform.position = _hit.point;
                   
-                  if (!_gotProp)
+                  if (!_gotProp && Input.GetMouseButton(0))
                   {
                       _gotProp = true;
                       _propInfo=Instantiate(prop, transform, true);
                       _storedTiles.Add(_propInfo.GetComponent<Transform>());
-                      print("Prop Added");
+                      _propInfo.transform.parent = _hit.collider.transform;
+                      _propInfo.transform.position = _hit.point;
                   }
 
-                  _propInfo.transform.position = _hit.point;
+                  if (Input.GetMouseButtonDown(0))
+                      _gotProp = false;
               }
 
               private void RaycastTiles()
@@ -159,10 +170,12 @@ public class LevelDesignTool : MonoBehaviour
                   if (_storedTiles.Contains(temp.parent))
                   {
                       print("Found");
-                      _storedTiles.Remove(temp.parent);
-                      _storedTiles.Add(temp.parent);
+                      var parent = temp.parent;
+                      _storedTiles.Remove(parent);
+                      _storedTiles.Add(parent);
                   }
-                  pointer.DOMove(_storedTiles[_storedTiles.Count - 1].position + new Vector3(0, 1, 0), .1f);
+                  pointer.transform.parent = _storedTiles[_storedTiles.Count - 1];
+                  pointer.DOLocalMove(new Vector3(0, 1, 0), .1f);
               }
               private void SpawnNewElementAt(Vector3 newPos)
               {

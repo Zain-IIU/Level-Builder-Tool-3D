@@ -23,7 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2755923621244653087}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 5819756914618152858}
   - component: {fileID: 5819756914617126470}
   - component: {fileID: 5819756914613387368}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bucket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
