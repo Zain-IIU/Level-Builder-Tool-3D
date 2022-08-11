@@ -17,7 +17,7 @@ public class LevelDesignTool : MonoBehaviour
     [SerializeField] private State designState;
     [SerializeField] private LevelSaveSystem saveSystem;
     [SerializeField] private TileInfo[] groundTilePrefabs;
-    [SerializeField] private GameObject prop;
+    [SerializeField] private GameObject[] prop;
     private readonly List<Transform> _storedTiles = new List<Transform>();
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask handlerLayer;
@@ -31,7 +31,8 @@ public class LevelDesignTool : MonoBehaviour
     private bool _hasPutFirstTile;
     private RaycastHit _hit;
     private Ray _ray;
-    private int _curPrefabIndex;
+    private int _curTilePrefabIndex;
+    private int _curPropPrefabIndex;
     private Vector3 _newPosition;
     private bool _gotProp;
     private GameObject _propInfo;
@@ -74,8 +75,8 @@ public class LevelDesignTool : MonoBehaviour
                 propPointer.gameObject.SetActive(false);
                 if (Input.GetKeyDown(KeyCode.Z))
                 {
-                    _curPrefabIndex++;
-                    _curPrefabIndex %= groundTilePrefabs.Length;
+                    _curTilePrefabIndex++;
+                    _curTilePrefabIndex %= groundTilePrefabs.Length;
                 }
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -106,7 +107,7 @@ public class LevelDesignTool : MonoBehaviour
                   _hit.collider.enabled = false;
                   _newPosition = _hit.point;
                   _newPosition.y = heightAdjuster;
-                  var levelElement = Instantiate(groundTilePrefabs[_curPrefabIndex], transform, true);
+                  var levelElement = Instantiate(groundTilePrefabs[_curTilePrefabIndex], transform, true);
                   print("base added");
                   var transform2 = levelElement.transform;
                   transform2.localPosition = _newPosition;
@@ -152,7 +153,7 @@ public class LevelDesignTool : MonoBehaviour
                   if (!_gotProp && Input.GetMouseButton(0))
                   {
                       _gotProp = true;
-                      _propInfo=Instantiate(prop, transform, true);
+                      _propInfo=Instantiate(prop[_curPropPrefabIndex], transform, true);
                       _storedTiles.Add(_propInfo.GetComponent<Transform>());
                       _propInfo.transform.parent = _hit.collider.transform;
                       _propInfo.transform.position = _hit.point;
@@ -179,22 +180,27 @@ public class LevelDesignTool : MonoBehaviour
               }
               private void SpawnNewElementAt(Vector3 newPos)
               {
-                  var levelElement = Instantiate(groundTilePrefabs[_curPrefabIndex], transform, true);
+                  var levelElement = Instantiate(groundTilePrefabs[_curTilePrefabIndex], transform, true);
                   print("new element added");
                   var transform2 = levelElement.transform;
                   transform2.localPosition = newPos;
                   _storedTiles.Add(levelElement.GetComponent<Transform>());
-                  pointer.DOMove(_storedTiles[_storedTiles.Count - 1].position + new Vector3(0, 1, 0), .1f);
+                  pointer.transform.parent = _storedTiles[_storedTiles.Count - 1];
+                  pointer.DOLocalMove(new Vector3(0, 1, 0), .1f);
               }
     
     
 
     #endregion
     
-    public void SetTileIndex(int value) => _curPrefabIndex = value;
+    public void SetTileIndex(int value) => _curTilePrefabIndex = value;
+    
+    public void SetPropIndex(int value) => _curPropPrefabIndex = value;
+    
 
     public void SaveLevel()
     {
+        pointer.gameObject.SetActive(false);
         foreach (var tile in _storedTiles.Where(tile => tile.GetComponent<TileInfo>()))
         {
             tile.GetComponent<TileInfo>().DisableHandler();
