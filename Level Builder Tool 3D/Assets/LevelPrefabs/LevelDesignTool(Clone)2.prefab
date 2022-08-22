@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5941282819087539339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9018247604990756557}
+  - component: {fileID: 3506208788815409291}
+  m_Layer: 0
+  m_Name: LevelDesignTool(Clone)2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9018247604990756557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5941282819087539339}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3506208788815409291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5941282819087539339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4759c3d7e01c4a99b238ce346e71bc9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modeText: {fileID: 0}
+  propWindow: {fileID: 0}
+  tileWindow: {fileID: 0}
+  designState: 0
+  saveSystem: {fileID: 0}
+  groundTilePrefabs:
+  - {fileID: 8419296192551321913, guid: e28fcb41c49696e4fa351dcdc711832d, type: 3}
+  - {fileID: 1357034265, guid: a5f83474b74b0e9499c4362c8828c598, type: 3}
+  - {fileID: 6608549270449205732, guid: 4d0787a8c83bc3442a95b6f5ffc46c45, type: 3}
+  - {fileID: 1771513127311832566, guid: 0328aa9fc60d4ff4eac5f15dd37452b7, type: 3}
+  - {fileID: 7092386371100439022, guid: 1b0dfdbb242d43442893abc80d61faef, type: 3}
+  - {fileID: 4615147813577394309, guid: 44895a8fc4cb33c42a1fa3a60be81d24, type: 3}
+  - {fileID: 6637277096754590258, guid: b09f10a0c8df6e542bf8f437cfae6b02, type: 3}
+  - {fileID: 6733593470467135243, guid: 89841e16a6524e84094cadb5f8f0cb44, type: 3}
+  prop:
+  - {fileID: 4120424787756400481, guid: 05c0455b45aafdf4cae150de17c468e2, type: 3}
+  - {fileID: 2755923621244653087, guid: a1427e627cecd8d4e93542e3dddc6e95, type: 3}
+  - {fileID: 2363780822684734726, guid: ec6a424ad781daa4b9433ffc81bff77d, type: 3}
+  - {fileID: 7709466895637537935, guid: 6f12c76360372f44b97a4be0bc0295f9, type: 3}
+  - {fileID: 1566585813908100595, guid: 7bffdcf8e5802184988f57d2bbac572d, type: 3}
+  - {fileID: 7121819125672849544, guid: 5e5c3c84aa6dd2344a4be038e961ad1e, type: 3}
+  - {fileID: 2533653369957307327, guid: 866d5c760078b5a428e4419a85e5fd45, type: 3}
+  - {fileID: 5772414115280672520, guid: d1ca651c05676e2419194b53c213c218, type: 3}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  handlerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  tileLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  heightAdjuster: 0
+  pointer: {fileID: 0}
+  propPointer: {fileID: 0}
